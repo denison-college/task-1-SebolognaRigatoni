@@ -22,7 +22,9 @@ def generate_board():
     return board
 generate_board()
 print(board)
-
+def checkwin():
+    print('Hi!!')
+    
 def playgame():
     while True:
         column = int(input(f'Select column 1 to {columns}')) - 1
@@ -30,11 +32,16 @@ def playgame():
         full = True
         for row in range(rows - 1, -1, -1):
             if board[row][column] == '◯':
-                board[row][column] = 'poop'
+                board[row][column] = 'V'
+                checkwin()
                 print(board)
                 full = False
+
+
                 break
         if full:
             print('Column Full')
 
+
 playgame()
+print('Game Broke')
