@@ -3,6 +3,7 @@ import datetime
 import pathlib
 import time
 import sys
+import pygame
 gameResults = ''
 board = None
 columns = 0
@@ -18,8 +19,16 @@ player = {
     1: {'name': '', 'score': 100, 'piece': '●', 'finalScore': 0},
     2: {'name': '', 'score': 100, 'piece': '■', 'finalScore': 0}
     }
-slowprint('WELCOME TO',)
+pygame.mixer.init()
+intro = pygame.mixer.Sound('3. Code and Tests/intro.wav')
+intro.play()
 time.sleep(1)
+slowprint('WELCOME TO\n')
+time.sleep(2.5)
+slowprint('THE BEST EXPERIENCE IN ALL OF PYTHON GAMING HISTORY\n')
+time.sleep(2.5)
+slowprint('AVAILABLE EXCLUSIVELY FOR BATHURST HIGH SOFTWARE ENGINEERING STUDENTS\n')
+time.sleep(2.5)
 slowprint('''
 
 
