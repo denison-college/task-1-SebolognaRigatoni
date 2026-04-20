@@ -6,42 +6,64 @@ rows = 0
 def generate_board():
     global board, rows, columns
     rows = int(input('Rows:'))
-    try:
-        rows = int(rows)
-    except ValueError:
-    # Handle error
-        print('error')
     columns = int(input('Columns:'))
-
-    try:
-        columns = int(columns)
-    except ValueError:
-        print('error')
-
     board = np.full((rows, columns), '◯')
     return board
 generate_board()
-print(board)
 def checkwin():
-    print('Hi!!')
-    
+    # check horizontal
+    for row in range(rows):
+        for column in range(columns - 3):
+            if board[row][column] in ('●', '■'):
+                if board[row][column] == board[row][column + 1] == board[row][column + 2] == board[row][column + 3]:
+                    print('Player', str(board[row][column])[0], 'wins!')
+                    return True
+    # check vertical
+    for column in range(columns):
+        for row in range(rows - 3):
+            if board[row][column] in ('●', '■'):
+                if board[row][column] == board[row + 1][column] == board[row + 2][column] == board[row + 3][column]:
+                    print('Player', str(board[row][column])[0], 'wins!')
+                    return True
+    # check diagonal positive
+    for column in range(columns):
+        for row in range(rows - 3):
+            if board[row][column] in ('●', '■'):
+                if board[row][column] == board[row + 1][column+1] == board[row + 2][column+2] == board[row + 3][column+3]:
+                    print('Player', str(board[row][column])[0], 'wins!')
+                    return True
+# check diagonal negative
+    for column in range(columns):
+        for row in range(rows - 3):
+            if board[row][column] in ('●', '■'):
+                if board[row][column] == board[row + 1][column-1] == board[row + 2][column-2] == board[row + 3][column-3]:
+                    print('Player', str(board[row][column])[0], 'wins!')
+                    return True
+
 def playgame():
+    player1 = True
     while True:
+        print(board)
+        if player1:
+            playerPiece = '●'
+            player1 = False
+        else:
+            playerPiece = '■'
+            player1 = True
+        print(f'{playerPiece} turn')
         column = int(input(f'Select column 1 to {columns}')) - 1
         # check column from bottom to top, drop if empty
         full = True
         for row in range(rows - 1, -1, -1):
             if board[row][column] == '◯':
-                board[row][column] = 'V'
-                checkwin()
-                print(board)
+                board[row][column] = playerPiece
                 full = False
-
-
                 break
         if full:
             print('Column Full')
-
+        if checkwin():
+            print(board)
+            break
 
 playgame()
-print('Game Broke')
+print('Game Over')
