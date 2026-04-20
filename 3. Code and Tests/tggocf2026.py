@@ -20,13 +20,13 @@ player = {
     2: {'name': '', 'score': 100, 'piece': '■', 'finalScore': 0}
     }
 pygame.mixer.init()
-intro = pygame.mixer.Sound('3. Code and Tests/intro.wav')
+intro = pygame.mixer.Sound('intro.wav')
 intro.play()
-time.sleep(1)
+time.sleep(0.8)
 slowprint('WELCOME TO\n')
 time.sleep(2.5)
 slowprint('THE BEST EXPERIENCE IN ALL OF PYTHON GAMING HISTORY\n')
-time.sleep(2.5)
+time.sleep(2.8)
 slowprint('AVAILABLE EXCLUSIVELY FOR BATHURST HIGH SOFTWARE ENGINEERING STUDENTS\n')
 time.sleep(2.5)
 slowprint('''
