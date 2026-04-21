@@ -193,16 +193,17 @@ while True:
         try:
             f = open("CFResults.txt")
             print('File found!')
-            with open("CFResults.txt", "a") as f:
+            with open("CFResults.txt", "a", encoding="utf-8") as f:
                 f.write(gameResults)
                 f.close()
-        except ValueError:
+        except:
             print('Results file not found. Creating...')
             f = open("CFResults.txt", "x")
-            with open("CFResults.txt", "a") as f:
+            with open("CFResults.txt", "a", encoding="utf-8") as f:
                 f.write(gameResults)
             f.close()
         print(f"File saved to {pathlib.Path().resolve()}")
+        break
     elif save.lower() == 'n':
         print('Cya later space cowboy.')
         break
