@@ -4,6 +4,8 @@ import pathlib
 import time
 import sys
 import pygame
+import os
+from colorist import Color, yellow, red
 gameResults = ''
 board = None
 columns = 0
@@ -13,6 +15,11 @@ def slowprint(text):
         sys.stdout.write(char)
         sys.stdout.flush()
         time.sleep(0.0015)
+def clearConsole():
+    try:
+        os.system('cls')
+    except:
+        os.system('clear')
 # Pieces: '◯' for empty slot, '●' for p1, '■' for p2
 # create players
 player = {
@@ -20,35 +27,40 @@ player = {
     2: {'name': '', 'score': 100, 'piece': '■', 'finalScore': 0}
     }
 pygame.mixer.init()
-intro = pygame.mixer.Sound('intro.wav')
-intro.play()
-time.sleep(0.8)
-slowprint('WELCOME TO\n')
-time.sleep(2.5)
-slowprint('THE BEST EXPERIENCE IN ALL OF PYTHON GAMING HISTORY\n')
-time.sleep(2.8)
-slowprint('AVAILABLE EXCLUSIVELY FOR BATHURST HIGH SOFTWARE ENGINEERING STUDENTS\n')
-time.sleep(2.5)
-slowprint('''
+def introSequence():
+    try:
+        intro = pygame.mixer.Sound('intro.wav')
+    except:
+        intro = pygame.mixer.Sound('3. Code and Tests\intro.wav')
+    intro.play()
+    clearConsole()
+    time.sleep(0.8)
+    slowprint('WELCOME TO\n')
+    time.sleep(2.5)
+    slowprint('THE BEST EXPERIENCE IN ALL OF PYTHON GAMING HISTORY\n')
+    time.sleep(2.8)
+    slowprint('AVAILABLE EXCLUSIVELY FOR BATHURST HIGH SOFTWARE ENGINEERING STUDENTS\n')
+    time.sleep(2.5)
+    slowprint('''
 
 
-████████╗██╗  ██╗███████╗     ██████╗ ██████╗ ███████╗ █████╗ ████████╗███████╗███████╗████████╗     ██████╗  █████╗ ███╗   ███╗███████╗     ██████╗ ███████╗    
-╚══██╔══╝██║  ██║██╔════╝    ██╔════╝ ██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔═══██╗██╔════╝    
-   ██║   ███████║█████╗      ██║  ███╗██████╔╝█████╗  ███████║   ██║   █████╗  ███████╗   ██║       ██║  ███╗███████║██╔████╔██║█████╗      ██║   ██║█████╗      
-   ██║   ██╔══██║██╔══╝      ██║   ██║██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ╚════██║   ██║       ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝      ██║   ██║██╔══╝      
-   ██║   ██║  ██║███████╗    ╚██████╔╝██║  ██║███████╗██║  ██║   ██║   ███████╗███████║   ██║       ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗    ╚██████╔╝██║         
-   ╚═╝   ╚═╝  ╚═╝╚══════╝     ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚══════╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝     ╚═════╝ ╚═╝         
-                                                                                                                                                                 
- ██████╗ ██████╗ ███╗   ██╗███╗   ██╗███████╗ ██████╗████████╗    ███████╗ ██████╗ ██╗   ██╗██████╗     ██████╗  ██████╗ ██████╗  ██████╗                        
-██╔════╝██╔═══██╗████╗  ██║████╗  ██║██╔════╝██╔════╝╚══██╔══╝    ██╔════╝██╔═══██╗██║   ██║██╔══██╗    ╚════██╗██╔═████╗╚════██╗██╔════╝                        
-██║     ██║   ██║██╔██╗ ██║██╔██╗ ██║█████╗  ██║        ██║       █████╗  ██║   ██║██║   ██║██████╔╝     █████╔╝██║██╔██║ █████╔╝███████╗                        
-██║     ██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██║        ██║       ██╔══╝  ██║   ██║██║   ██║██╔══██╗    ██╔═══╝ ████╔╝██║██╔═══╝ ██╔═══██╗                       
-╚██████╗╚██████╔╝██║ ╚████║██║ ╚████║███████╗╚██████╗   ██║       ██║     ╚██████╔╝╚██████╔╝██║  ██║    ███████╗╚██████╔╝███████╗╚██████╔╝                       
- ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═╝       ╚═╝      ╚═════╝  ╚═════╝ ╚═╝  ╚═╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═════╝                        
-                                                                                                                                                                 
+    ████████╗██╗  ██╗███████╗     ██████╗ ██████╗ ███████╗ █████╗ ████████╗███████╗███████╗████████╗     ██████╗  █████╗ ███╗   ███╗███████╗     ██████╗ ███████╗    
+    ╚══██╔══╝██║  ██║██╔════╝    ██╔════╝ ██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔═══██╗██╔════╝    
+    ██║   ███████║█████╗      ██║  ███╗██████╔╝█████╗  ███████║   ██║   █████╗  ███████╗   ██║       ██║  ███╗███████║██╔████╔██║█████╗      ██║   ██║█████╗      
+    ██║   ██╔══██║██╔══╝      ██║   ██║██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ╚════██║   ██║       ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝      ██║   ██║██╔══╝      
+    ██║   ██║  ██║███████╗    ╚██████╔╝██║  ██║███████╗██║  ██║   ██║   ███████╗███████║   ██║       ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗    ╚██████╔╝██║         
+    ╚═╝   ╚═╝  ╚═╝╚══════╝     ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚══════╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝     ╚═════╝ ╚═╝         
+                                                                                                                                                                    
+    ██████╗ ██████╗ ███╗   ██╗███╗   ██╗███████╗ ██████╗████████╗    ███████╗ ██████╗ ██╗   ██╗██████╗     ██████╗  ██████╗ ██████╗  ██████╗                        
+    ██╔════╝██╔═══██╗████╗  ██║████╗  ██║██╔════╝██╔════╝╚══██╔══╝    ██╔════╝██╔═══██╗██║   ██║██╔══██╗    ╚════██╗██╔═████╗╚════██╗██╔════╝                        
+    ██║     ██║   ██║██╔██╗ ██║██╔██╗ ██║█████╗  ██║        ██║       █████╗  ██║   ██║██║   ██║██████╔╝     █████╔╝██║██╔██║ █████╔╝███████╗                        
+    ██║     ██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██║        ██║       ██╔══╝  ██║   ██║██║   ██║██╔══██╗    ██╔═══╝ ████╔╝██║██╔═══╝ ██╔═══██╗                       
+    ╚██████╗╚██████╔╝██║ ╚████║██║ ╚████║███████╗╚██████╗   ██║       ██║     ╚██████╔╝╚██████╔╝██║  ██║    ███████╗╚██████╔╝███████╗╚██████╔╝                       
+    ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═╝       ╚═╝      ╚═════╝  ╚═════╝ ╚═╝  ╚═╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═════╝                        
+                                                                                                                                                                    
 
-''',)
-time.sleep(1)
+    ''',)
+    time.sleep(1)
 while True:
     player[1]['name'] = input("What is player 1's 3 letter name?").upper()
     if len(player[1]['name']) != 3 or not (player[1]['name'].isalpha()):
@@ -63,6 +75,7 @@ while True:
         print('Names cannot be the same.')
     else:
         break
+clearConsole()
 # generate game board
 def generateBoard():
     global board, rows, columns
@@ -123,7 +136,15 @@ def playGame():
             else:
                 print(f"{player[i]['name']}'s turn")
             while True:
-                column = int(input(f'Select column 1 to {columns}')) - 1
+                while True:
+                    try:
+                        column = int(input(f'Select column 1 to {columns}: ')) - 1
+                        if column in range(columns):
+                            break
+                        else:
+                            print('Out of range')
+                    except ValueError:
+                        print('Invalid input. Please enter number as a digit.')
                 full = True
                 # check column from bottom to top, drop if empty
                 for row in range(rows - 1, -1, -1):
@@ -136,6 +157,7 @@ def playGame():
                 else:
                     break
             if checkWin():
+                clearConsole()
                 winningPlayer = player[i]
                 player[i]['finalScore'] = player[i]['score']
                 print(f'{player[i]['name']} wins {winDirection} with {player[i]['finalScore']} points left!')
@@ -156,28 +178,34 @@ def playGame():
             # not sure if i should subtract points when they place the winning piece
             # i think not
             player[i]['score'] -= 2
+            clearConsole()
+
 
 playGame()
 print('Game Over')
 
 
 # save results to file
-save = input(f'Would you like to save your results? Y/N ')
-if save.lower() == 'y':
-    print('Looking for previous results...')
-    try:
-        f = open("CFResults.txt")
-        print('File found!')
-        with open("CFResults.txt", "a") as f:
-            f.write(gameResults)
+while True:
+    save = input(f'Would you like to save your results? Y/N ')
+    if save.lower() == 'y':
+        print('Looking for previous results...')
+        try:
+            f = open("CFResults.txt")
+            print('File found!')
+            with open("CFResults.txt", "a", encoding="utf-8") as f:
+                f.write(gameResults)
+                f.close()
+        except:
+            print('Results file not found. Creating...')
+            f = open("CFResults.txt", "x")
+            with open("CFResults.txt", "a", encoding="utf-8") as f:
+                f.write(gameResults)
             f.close()
-
-
-
-    except:
-        print('Results file not found. Creating...')
-        f = open("CFResults.txt", "x")
-        with open("CFResults.txt", "a") as f:
-            f.write(gameResults)
-        f.close()
-    print(f"File saved to {pathlib.Path().resolve()}")
+        print(f"File saved to {pathlib.Path().resolve()}")
+        break
+    elif save.lower() == 'n':
+        print('Cya later space cowboy.')
+        break
+    else:
+        print('Invalid input. Please select Y or N.')
