@@ -13,6 +13,8 @@ from colorist import Color, yellow, red
 
 
 
+# Pieces: '◯' for empty slot, '●' for p1, '■' for p2
+# create players
 class tggocf:
     def __init__(self):
         self.gameResults = ''
@@ -23,6 +25,51 @@ class tggocf:
             1: {'name': '', 'score': 100, 'piece': '●', 'finalScore': 0},
             2: {'name': '', 'score': 100, 'piece': '■', 'finalScore': 0}
         }
+
+    def slowprint(self, text):
+        for char in text:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(0.0015)
+
+    def clearConsole(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+    def introSequence(self):
+        try:
+            intro = pygame.mixer.Sound('intro.wav')
+        except:
+            intro = pygame.mixer.Sound('3. Code and Tests\intro.wav')
+        intro.play()
+        self.clearConsole()
+        time.sleep(0.8)
+        self.slowprint('WELCOME TO\n')
+        time.sleep(2.5)
+        self.slowprint('THE BEST EXPERIENCE IN ALL OF PYTHON GAMING HISTORY\n')
+        time.sleep(2.8)
+        self.slowprint('AVAILABLE EXCLUSIVELY FOR BATHURST HIGH SOFTWARE ENGINEERING STUDENTS\n')
+        time.sleep(2.5)
+        self.slowprint('''
+
+
+        ████████╗██╗  ██╗███████╗     ██████╗ ██████╗ ███████╗ █████╗ ████████╗███████╗███████╗████████╗     ██████╗  █████╗ ███╗   ███╗███████╗     ██████╗ ███████╗    
+        ╚══██╔══╝██║  ██║██╔════╝    ██╔════╝ ██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔═══██╗██╔════╝    
+        ██║   ███████║█████╗      ██║  ███╗██████╔╝█████╗  ███████║   ██║   █████╗  ███████╗   ██║       ██║  ███╗███████║██╔████╔██║█████╗      ██║   ██║█████╗      
+        ██║   ██╔══██║██╔══╝      ██║   ██║██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ╚════██║   ██║       ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝      ██║   ██║██╔══╝      
+        ██║   ██║  ██║███████╗    ╚██████╔╝██║  ██║███████╗██║  ██║   ██║   ███████╗███████║   ██║       ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗    ╚██████╔╝██║         
+        ╚═╝   ╚═╝  ╚═╝╚══════╝     ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚══════╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝     ╚═════╝ ╚═╝         
+
+        ██████╗ ██████╗ ███╗   ██╗███╗   ██╗███████╗ ██████╗████████╗    ███████╗ ██████╗ ██╗   ██╗██████╗     ██████╗  ██████╗ ██████╗  ██████╗                        
+        ██╔════╝██╔═══██╗████╗  ██║████╗  ██║██╔════╝██╔════╝╚══██╔══╝    ██╔════╝██╔═══██╗██║   ██║██╔══██╗    ╚════██╗██╔═████╗╚════██╗██╔════╝                        
+        ██║     ██║   ██║██╔██╗ ██║██╔██╗ ██║█████╗  ██║        ██║       █████╗  ██║   ██║██║   ██║██████╔╝     █████╔╝██║██╔██║ █████╔╝███████╗                        
+        ██║     ██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██║        ██║       ██╔══╝  ██║   ██║██║   ██║██╔══██╗    ██╔═══╝ ████╔╝██║██╔═══╝ ██╔═══██╗                       
+        ╚██████╗╚██████╔╝██║ ╚████║██║ ╚████║███████╗╚██████╗   ██║       ██║     ╚██████╔╝╚██████╔╝██║  ██║    ███████╗╚██████╔╝███████╗╚██████╔╝                       
+        ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═╝       ╚═╝      ╚═════╝  ╚═════╝ ╚═╝  ╚═╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═════╝                        
+
+
+        ''', )
+        time.sleep(1)
+
     def generateBoard(self):
         self.rows = 6
         self.columns = 7
@@ -44,7 +91,7 @@ class tggocf:
                 print('Names cannot be the same.')
             else:
                 break
-        clearConsole()
+        self.clearConsole()
     def checkWin(self):
         # check horizontal
         for row in range(self.rows):
@@ -112,7 +159,7 @@ class tggocf:
                     else:
                         break
                 if self.checkWin():
-                    clearConsole()
+                    self.clearConsole()
                     winningPlayer = self.player[i]
                     self.player[i]['finalScore'] = self.player[i]['score']
                     print(f'{self.player[i]['name']} wins {self.winDirection} with {self.player[i]['finalScore']} points left!')
@@ -140,7 +187,7 @@ class tggocf:
                 # not sure if i should subtract points when they place the winning piece
                 # i think not
                 self.player[i]['score'] -= 2
-                clearConsole()
+                self.clearConsole()
 
     def saveFile(self):
         # save results to file
@@ -169,53 +216,9 @@ class tggocf:
                 print('Invalid input. Please select Y or N.')
 
 
-def slowprint(text):
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(0.0015)
-def clearConsole():
-    os.system('cls' if os.name=='nt' else 'clear')
-# Pieces: '◯' for empty slot, '●' for p1, '■' for p2
-# create players
+
 
 pygame.mixer.init()
-def introSequence():
-    try:
-        intro = pygame.mixer.Sound('intro.wav')
-    except:
-        intro = pygame.mixer.Sound('3. Code and Tests\intro.wav')
-    intro.play()
-    clearConsole()
-    time.sleep(0.8)
-    slowprint('WELCOME TO\n')
-    time.sleep(2.5)
-    slowprint('THE BEST EXPERIENCE IN ALL OF PYTHON GAMING HISTORY\n')
-    time.sleep(2.8)
-    slowprint('AVAILABLE EXCLUSIVELY FOR BATHURST HIGH SOFTWARE ENGINEERING STUDENTS\n')
-    time.sleep(2.5)
-    slowprint('''
-
-
-    ████████╗██╗  ██╗███████╗     ██████╗ ██████╗ ███████╗ █████╗ ████████╗███████╗███████╗████████╗     ██████╗  █████╗ ███╗   ███╗███████╗     ██████╗ ███████╗    
-    ╚══██╔══╝██║  ██║██╔════╝    ██╔════╝ ██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔═══██╗██╔════╝    
-    ██║   ███████║█████╗      ██║  ███╗██████╔╝█████╗  ███████║   ██║   █████╗  ███████╗   ██║       ██║  ███╗███████║██╔████╔██║█████╗      ██║   ██║█████╗      
-    ██║   ██╔══██║██╔══╝      ██║   ██║██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ╚════██║   ██║       ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝      ██║   ██║██╔══╝      
-    ██║   ██║  ██║███████╗    ╚██████╔╝██║  ██║███████╗██║  ██║   ██║   ███████╗███████║   ██║       ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗    ╚██████╔╝██║         
-    ╚═╝   ╚═╝  ╚═╝╚══════╝     ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚══════╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝     ╚═════╝ ╚═╝         
-                                                                                                                                                                    
-    ██████╗ ██████╗ ███╗   ██╗███╗   ██╗███████╗ ██████╗████████╗    ███████╗ ██████╗ ██╗   ██╗██████╗     ██████╗  ██████╗ ██████╗  ██████╗                        
-    ██╔════╝██╔═══██╗████╗  ██║████╗  ██║██╔════╝██╔════╝╚══██╔══╝    ██╔════╝██╔═══██╗██║   ██║██╔══██╗    ╚════██╗██╔═████╗╚════██╗██╔════╝                        
-    ██║     ██║   ██║██╔██╗ ██║██╔██╗ ██║█████╗  ██║        ██║       █████╗  ██║   ██║██║   ██║██████╔╝     █████╔╝██║██╔██║ █████╔╝███████╗                        
-    ██║     ██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██║        ██║       ██╔══╝  ██║   ██║██║   ██║██╔══██╗    ██╔═══╝ ████╔╝██║██╔═══╝ ██╔═══██╗                       
-    ╚██████╗╚██████╔╝██║ ╚████║██║ ╚████║███████╗╚██████╗   ██║       ██║     ╚██████╔╝╚██████╔╝██║  ██║    ███████╗╚██████╔╝███████╗╚██████╔╝                       
-    ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═╝       ╚═╝      ╚═════╝  ╚═════╝ ╚═╝  ╚═╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═════╝                        
-                                                                                                                                                                    
-
-    ''',)
-    time.sleep(1)
-
-# generate game board
 
 
 
@@ -240,6 +243,7 @@ class gameClient:
         print('Running listener..')
         threading.Thread(target=self.run_listener).start()
         time.sleep(1)
+        self.game.introSequence()
         self.game.generateBoard()
         self.game.generatePlayers()
         self.game.playGame()
