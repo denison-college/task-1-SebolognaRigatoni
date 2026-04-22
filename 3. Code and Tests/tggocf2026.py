@@ -10,13 +10,17 @@ import sys
 import pygame
 import os
 from colorist import Color, yellow, red
-
+# networking possible thanks to this guy https://www.youtube.com/watch?v=VvwLXnY-mKk
 
 
 # Pieces: '◯' for empty slot, '●' for p1, '■' for p2
 # create players
 class tggocf:
-    def __init__(self):
+    def __init__(self, host='127.0.0.1', port=62743):
+        self.host = host
+        self.port = port
+        self.socket = None
+        pygame.mixer.init()
         self.gameResults = ''
         self.board = None
         self.columns = 0
@@ -25,7 +29,9 @@ class tggocf:
             1: {'name': '', 'score': 100, 'piece': '●', 'finalScore': 0},
             2: {'name': '', 'score': 100, 'piece': '■', 'finalScore': 0}
         }
-
+        # self.introSequence()
+        self.generateBoard()
+        self.generatePlayers()
     def slowprint(self, text):
         for char in text:
             sys.stdout.write(char)
@@ -125,7 +131,33 @@ class tggocf:
                         return True
     def checkDraw(self):
         return '◯' not in self.board
-    def playGame(self):
+    def saveFile(self):
+        # save results to file
+        while True:
+            save = input(f'Would you like to save your results? Y/N ')
+            if save.lower() == 'y':
+                print('Looking for previous results...')
+                try:
+                    f = open("CFResults.txt")
+                    print('File found!')
+                    with open("CFResults.txt", "a", encoding="utf-8") as f:
+                        f.write(self.gameResults)
+                        f.close()
+                except FileNotFoundError:
+                    print('Results file not found. Creating...')
+                    f = open("CFResults.txt", "x")
+                    with open("CFResults.txt", "a", encoding="utf-8") as f:
+                        f.write(self.gameResults)
+                    f.close()
+                print(f"File saved to {pathlib.Path().resolve()} as CFResults.txt")
+                break
+            elif save.lower() == 'n':
+                print('Cya later space cowboy.')
+                break
+            else:
+                print('Invalid input. Please select Y or N.')
+
+    def update(self):
         gaming = True
         while gaming:
             for i in self.player:
@@ -133,6 +165,15 @@ class tggocf:
                 print(''' 1    2   3   4   5   6   7''')
                 if self.checkDraw():
                     print('Draw! Nobody wins!')
+                    self.gameResults = (
+                        f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} ///\n"
+                        f"Players:\n"
+                        f"\t1 - {self.player[1]['name']}\n"
+                        f"\t2 - {self.player[2]['name']}\n"
+                        f"Game drew!! Nobody wins.\n\n"
+                        f"Final board state:\n"
+                        f"{self.board} \n\n"
+                    )
                     gaming = False
                     break
                 else:
@@ -166,13 +207,6 @@ class tggocf:
                     print(self.board)
                     gaming = False
                     self.gameResults = (
-    f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} ///\n"
-    f"Players:\n"
-    f"\t1 - {self.player[1]['name']}\n"
-    f"\t2 - {self.player[2]['name']}\n"
-    f"Game drew!! Nobody wins.\n\n"
-)
-                    self.gameResults = (
                         f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} /// \n"
                         f"Players:\n"
                         f"  1 - {self.player[1]['name']}\n"
@@ -188,47 +222,8 @@ class tggocf:
                 # i think not
                 self.player[i]['score'] -= 2
                 self.clearConsole()
+        self.saveFile()
 
-    def saveFile(self):
-        # save results to file
-        while True:
-            save = input(f'Would you like to save your results? Y/N ')
-            if save.lower() == 'y':
-                print('Looking for previous results...')
-                try:
-                    f = open("CFResults.txt")
-                    print('File found!')
-                    with open("CFResults.txt", "a", encoding="utf-8") as f:
-                        f.write(self.gameResults)
-                        f.close()
-                except FileNotFoundError:
-                    print('Results file not found. Creating...')
-                    f = open("CFResults.txt", "x")
-                    with open("CFResults.txt", "a", encoding="utf-8") as f:
-                        f.write(self.gameResults)
-                    f.close()
-                print(f"File saved to {pathlib.Path().resolve()} as CFResults.txt")
-                break
-            elif save.lower() == 'n':
-                print('Cya later space cowboy.')
-                break
-            else:
-                print('Invalid input. Please select Y or N.')
-
-
-
-
-pygame.mixer.init()
-
-
-
-
-class gameClient:
-    def __init__(self, host='127.0.0.1', port=62743):
-        self.host = host
-        self.port = port
-        self.socket = None
-        self.game = tggocf()
     def run_listener(self):
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -238,19 +233,18 @@ class gameClient:
             s.settimeout(1)
             print('connected', s)
             self.socket = s
-
     def run(self):
         print('Running listener..')
         threading.Thread(target=self.run_listener).start()
         time.sleep(1)
-        self.game.introSequence()
-        self.game.generateBoard()
-        self.game.generatePlayers()
-        self.game.playGame()
-        self.game.saveFile()
+        # self.game.introSequence()
+        while True:
+            self.update()
+            break
 
 
-client = gameClient()
-client.run()
 
+
+tggocf().run()
+print('hii')
 

@@ -3,6 +3,7 @@ import struct
 import socket
 import threading
 
+# networking possible thanks to this guy https://www.youtube.com/watch?v=VvwLXnY-mKk
 
 class Server:
     def __init__(self, host='localhost', port=62743):
