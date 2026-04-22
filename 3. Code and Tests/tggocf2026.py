@@ -165,15 +165,15 @@ class tggocf:
                     print(f'{self.player[i]['name']} wins {self.winDirection} with {self.player[i]['finalScore']} points left!')
                     print(self.board)
                     gaming = False
-                    self.gameResults = f'''/// GAME {datetime.datetime.now().strftime("%I:%M:%S %p on %B %d, %Y")} ///
-    Players:
-        1 - {self.player[1]['name']}
-        2 - {self.player[2]['name']}
-    Game drew!! Nobody wins.
-
-    '''
                     self.gameResults = (
-                        f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} \\\\n"
+    f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} ///\n"
+    f"Players:\n"
+    f"\t1 - {self.player[1]['name']}\n"
+    f"\t2 - {self.player[2]['name']}\n"
+    f"Game drew!! Nobody wins.\n\n"
+)
+                    self.gameResults = (
+                        f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} /// \n"
                         f"Players:\n"
                         f"  1 - {self.player[1]['name']}\n"
                         f"  2 - {self.player[2]['name']}\n"
