@@ -16,10 +16,7 @@ def slowprint(text):
         sys.stdout.flush()
         time.sleep(0.0015)
 def clearConsole():
-    try:
-        os.system('cls')
-    except:
-        os.system('clear')
+    os.system('cls' if os.name=='nt' else 'clear')
 # Pieces: '◯' for empty slot, '●' for p1, '■' for p2
 # create players
 player = {
@@ -83,7 +80,6 @@ def generateBoard():
     columns = 7
     board = np.full((rows, columns), '◯')
     return board
-generateBoard()
 def checkWin():
     global winDirection
     # check horizontal
@@ -116,7 +112,6 @@ def checkWin():
                     return True
 def checkDraw():
     return '◯' not in board
-
 def playGame():
     global gameResults
     global player
@@ -124,27 +119,41 @@ def playGame():
     while gaming:
         for i in player:
             print(board)
+            print(''' 1    2   3   4   5   6   7''')
             if checkDraw():
                 print('Draw! Nobody wins!')
                 gaming = False
                 gameResults = f'''/// GAME {datetime.datetime.now().strftime("%I:%M:%S %p on %B %d, %Y")} ///
-                                    Players:
-                                        1 - {player[1]['name']}
-                                        2 - {player[2]['name']}
-                    Game drew!! Nobody wins.'''
+Players:
+    1 - {player[1]['name']}
+    2 - {player[2]['name']}
+Game drew!! Nobody wins.
+
+'''
                 break
             else:
                 print(f"{player[i]['name']}'s turn")
             while True:
                 while True:
                     try:
-                        column = int(input(f'Select column 1 to {columns}: ')) - 1
+                        column = int(input(f'Select column 1 to {columns}, or type Q to quit: ')) - 1
                         if column in range(columns):
                             break
                         else:
                             print('Out of range')
                     except ValueError:
-                        print('Invalid input. Please enter number as a digit.')
+                        if column.lower() == 'q':
+                            gameResults = (
+                            f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} ///\n"
+                            f"Players:\n"
+                            f"\t1 - {player[1]['name']}\n"
+                            f"\t2 - {player[2]['name']}\n"
+                            f"{player[i]['name']} quit.\n"
+                            f"Final board state:\n"
+                            f"{board} \n\n"
+)
+                        else:
+                            print('Please type your number as a digit between 1 and 7.')
                 full = True
                 # check column from bottom to top, drop if empty
                 for row in range(rows - 1, -1, -1):
@@ -163,16 +172,16 @@ def playGame():
                 print(f'{player[i]['name']} wins {winDirection} with {player[i]['finalScore']} points left!')
                 print(board)
                 gaming = False
-                gameResults = f'''/// GAME {datetime.datetime.now().strftime("%I:%M:%S %p on %B %d, %Y")} ///
-                Players:
-                    1 - {player[1]['name']}
-                    2 - {player[2]['name']}
-                Winning Player: 
-                {winningPlayer['name']} with {winningPlayer['finalScore']} points.
-                Final board state:
-                {board} 
-
-                '''
+                gameResults = (
+                    f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} \\\\n"
+                    f"Players:\n"
+                    f"  1 - {player[1]['name']}\n"
+                    f"  2 - {player[2]['name']}\n"
+                    f"Winning Player: \n"
+                    f"  {winningPlayer['name']} with {winningPlayer['finalScore']} points.\n"
+                    f"Final board state:\n"
+                    f"{board} \n\n"
+                )
                 break
             # if they havent placed the winning piece, subtract points.
             # not sure if i should subtract points when they place the winning piece
@@ -180,7 +189,7 @@ def playGame():
             player[i]['score'] -= 2
             clearConsole()
 
-
+generateBoard()
 playGame()
 print('Game Over')
 
@@ -196,13 +205,13 @@ while True:
             with open("CFResults.txt", "a", encoding="utf-8") as f:
                 f.write(gameResults)
                 f.close()
-        except:
+        except FileNotFoundError:
             print('Results file not found. Creating...')
             f = open("CFResults.txt", "x")
             with open("CFResults.txt", "a", encoding="utf-8") as f:
                 f.write(gameResults)
             f.close()
-        print(f"File saved to {pathlib.Path().resolve()}")
+        print(f"File saved to {pathlib.Path().resolve()} as CFResults.txt")
         break
     elif save.lower() == 'n':
         print('Cya later space cowboy.')
