@@ -20,6 +20,7 @@ class tggocf:
         self.host = host
         self.port = port
         self.socket = None
+        self.kill = False
         pygame.mixer.init()
         self.gameResults = ''
         self.board = None
@@ -158,74 +159,23 @@ class tggocf:
                 print('Invalid input. Please select Y or N.')
 
     def update(self):
-        gaming = True
-        while gaming:
-            for i in self.player:
-                print(self.board)
-                print(''' 1    2   3   4   5   6   7''')
-                if self.checkDraw():
-                    print('Draw! Nobody wins!')
-                    self.gameResults = (
-                        f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} ///\n"
-                        f"Players:\n"
-                        f"\t1 - {self.player[1]['name']}\n"
-                        f"\t2 - {self.player[2]['name']}\n"
-                        f"Game drew!! Nobody wins.\n\n"
-                        f"Final board state:\n"
-                        f"{self.board} \n\n"
-                    )
-                    gaming = False
-                    break
-                else:
-                    print(f"{self.player[i]['name']}'s turn")
-                while True:
-                    while True:
-                        try:
-                            column = int(input(f'Select column 1 to {self.columns}: ')) - 1
-                            if column in range(self.columns):
-                                break
-                            else:
-                                print('Out of range')
-                        except ValueError:
-                            print('Please type your number as a digit between 1 and 7.')
-                    full = True
-                    # check column from bottom to top, drop if empty
-                    for row in range(self.rows - 1, -1, -1):
-                        if self.board[row][column] == '◯':
-                            self.board[row][column] = self.player[i]['piece']
-                            full = False
-                            break
-                    if full:
-                        print('Column Full')
-                    else:
-                        break
-                if self.checkWin():
-                    self.clearConsole()
-                    winningPlayer = self.player[i]
-                    self.player[i]['finalScore'] = self.player[i]['score']
-                    print(f'{self.player[i]['name']} wins {self.winDirection} with {self.player[i]['finalScore']} points left!')
-                    print(self.board)
-                    gaming = False
-                    self.gameResults = (
-                        f"/// GAME {datetime.datetime.now().strftime('%I:%M:%S %p on %B %d, %Y')} /// \n"
-                        f"Players:\n"
-                        f"  1 - {self.player[1]['name']}\n"
-                        f"  2 - {self.player[2]['name']}\n"
-                        f"Winning Player: \n"
-                        f"  {winningPlayer['name']} with {winningPlayer['finalScore']} points.\n"
-                        f"Final board state:\n"
-                        f"{self.board} \n\n"
-                    )
-                    break
-                # if they havent placed the winning piece, subtract points.
-                # not sure if i should subtract points when they place the winning piece
-                # i think not
-                self.player[i]['score'] -= 2
-                self.clearConsole()
+        print(self.board)
+        print(''' 1    2   3   4   5   6   7''')
+
+    def place(self, space_index):
+        if self.socket:
+            self.socket.sendall(struct.pack('B', space_index))
         self.saveFile()
+    def deserialize(self, data):
+        update_format = 'BB9S'
+        if len(data) >= struct.calcsize(update_format):
+            turn, winner, board = struct.unpack_from(update_format, data, 0)
+            self.turn = turn
+            self.winner = chr(winner) if chr(winner) != self.null_char else None
+            self.board = list(board.decode('utf-8'))
+
 
     def run_listener(self):
-
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
             s.connect((self.host, self.port))
@@ -233,18 +183,26 @@ class tggocf:
             s.settimeout(1)
             print('connected', s)
             self.socket = s
+            while not self.kill:
+                try:
+                    data = self.socket.recv(4096)
+                    if len(data):
+                        self.deserialize(data)
+                except socket.timeout:
+                    pass
+                time.sleep(0.001)
+
+
     def run(self):
         print('Running listener..')
         threading.Thread(target=self.run_listener).start()
         time.sleep(1)
-        # self.game.introSequence()
         while True:
             self.update()
-            break
+            self.kill = True
 
 
 
 
 tggocf().run()
-print('hii')
 
