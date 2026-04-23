@@ -343,6 +343,7 @@ def playGame():
                 winningPlayer = player[i]
                 player[i]['finalScore'] = player[i]['score']
                 slowprint(f'{player[i]['name']} wins {winDirection} with {player[i]['finalScore']} points left!', 0.05)
+                print()
                 print(board)
                 time.sleep(3)
                 slowprint(f""" 
