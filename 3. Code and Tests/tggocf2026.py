@@ -252,12 +252,12 @@ def playGame():
                 pygame.mixer.music.play()
                 fireworks = pygame.mixer.Sound('Firework - Sound Effect (HD).mp3')
                 fireworks.play()
-                time.sleep(5)
                 clearConsole()
                 winningPlayer = player[i]
                 player[i]['finalScore'] = player[i]['score']
                 slowprint(f'{player[i]['name']} wins {winDirection} with {player[i]['finalScore']} points left!', 0.05)
                 print(board)
+                time.sleep(3)
                 slowprint(f""" 
                         CELEBRATING {player[i]['name']}                             
                                         .
