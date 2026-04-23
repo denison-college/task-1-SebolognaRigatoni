@@ -3,9 +3,9 @@ import pytest
 import tggocf2026 as game
 
 
-def testBoardSetup():
-    game.rows = 6
-    game.columns = 7
+def BoardSetup():
+    game.rows = 12
+    game.columns = 9
     game.board = np.full((game.rows, game.columns), '◯')
 
 

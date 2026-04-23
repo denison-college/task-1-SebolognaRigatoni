@@ -20,8 +20,8 @@ def clearConsole():
 # Pieces: '◯' for empty slot, '●' for p1, '■' for p2
 # create players
 player = {
-    1: {'name': '', 'score': 100, 'piece': '●', 'finalScore': 0},
-    2: {'name': '', 'score': 100, 'piece': '■', 'finalScore': 0}
+    1: {'name': '', 'score': 100, 'piece': '●', 'highScore': 0},
+    2: {'name': '', 'score': 100, 'piece': '■', 'highScore': 0}
     }
 pygame.mixer.init()
 def introSequence():
@@ -29,6 +29,7 @@ def introSequence():
         intro = pygame.mixer.Sound('intro.wav')
     except:
         intro = pygame.mixer.Sound('3. Code and Tests\intro.wav')
+    clearConsole()
     print('This Game Made Possible By Guy Lore')
     time.sleep(2)
     print("""░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓
@@ -341,8 +342,8 @@ def playGame():
                 fireworks.play()
                 clearConsole()
                 winningPlayer = player[i]
-                player[i]['finalScore'] = player[i]['score']
-                slowprint(f'{player[i]['name']} wins {winDirection} with {player[i]['finalScore']} points left!', 0.05)
+                player[i]['highScore'] = player[i]['score']
+                slowprint(f'{player[i]['name']} wins {winDirection} with {player[i]['highScore']} points left!', 0.05)
                 print()
                 print(board)
                 time.sleep(3)
@@ -375,7 +376,7 @@ MUSIC: LIL COITS - HOLY LIGHTS
                     f"  1 - {player[1]['name']}\n"
                     f"  2 - {player[2]['name']}\n"
                     f"Winning Player: \n"
-                    f"  {winningPlayer['name']} with {winningPlayer['finalScore']} points.\n"
+                    f"  {winningPlayer['name']} with {winningPlayer['highScore']} points.\n"
                     f"Final board state:\n"
                     f"{board} \n\n"
                 )
